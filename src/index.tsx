@@ -3,13 +3,33 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import store from 'store';
+import { BrowserRouter } from 'react-router-dom';
+import axios,{AxiosRequestConfig} from 'axios';
+
+axios.interceptors.request.use((request:AxiosRequestConfig) => {
+  
+  if(localStorage.getItem('user')){
+    const user = localStorage.getItem('user')
+    const token = user && JSON.parse(user).token
+    request.headers!.Authorization = `Bearer ${token}`
+  }
+
+  return request
+})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <BrowserRouter>
+      <App />
+      </BrowserRouter>
+    </Provider>
+   
   </React.StrictMode>
 );
 
